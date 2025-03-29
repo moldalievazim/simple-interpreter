@@ -1,0 +1,24 @@
+    // 20.1 ->               5 + 6 * 3 - 4 / 2
+    // 20.2 ->               5 + 6 * (45 - 3) - 4 / 2
+    // 20.3 ->               5 ^ 3 + 6 * (45 - 3 ^ 2) - 4 / 2
+    // 20.4 exponents ->     1.0e - 10,  -2.71828 - 2,  9.81e2
+
+    <expression> ::= <term> | <expression> "+" <term> | <expression> "-" <term>
+    <term>       ::= <factor> | <term> "*" <factor> | <term> "/" <factor>
+    <factor>     ::= <base> |<base> "^" <factor> | "(" <expression> ")" | <scientificNumber>
+    <base>       ::= <number>
+    <number>     ::= <integer> | <float>
+    <integer>    ::= <digit> | <integer> <digit>
+    <float>      ::= <integer> "." <integer>
+    <scientificNumber> ::= <number> "e" <signedInteger>
+    <signedInteger>    ::= <integer> | "+" <integer> | "-" <integer>
+    <digit>      ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+
+
+//<program>   ::= <statement>
+//<statement> ::= <config> | <update> | <show>
+//<config>    ::= "config" <string> "=" <number>
+//<update>    ::= "update" <string> "=" <number>
+//<show>      ::= <string>
+//<string>    ::= ""
+
