@@ -25,7 +25,8 @@
 // 10.2 Loop statement
 //for i in range(5):
 //    compute "iteration_result_%i" = %num_users * %i
-<program> ::= <for_loop>
+
+/*<program> ::= <for_loop>
 <for_loop> ::= "for" <identifier> "in" "range" "(" <integer> ")" ":" <newline> <indent> <statement>
 <statement> ::= <compute_statement>
 <compute_statement> ::= "compute" <string_literal> "+" <expression>
@@ -39,9 +40,29 @@
 <string_literal> ::= '"' (<character> | "%i")+ '"'
 <character> ::= <letter> | <digit>
 <newline> ::= "\n"
-<indent> ::= "    "
+<indent> ::= "    "*/
+
 
 // 10.3 Conditional statement
-//<program> ::= <if_statement>
-//<if_statement> ::=
+//if %num_users > 1000
+//      update "status" = "high load"
+//else
+//      update "status" = "normal load"
+//end
+
+<if_statement> ::= "if" <condition> <newline> <indent> <statement>+ <dedent> ("else" <newline> <indent> <statement>+ <dedent>)? "end"
+<condition> ::= <expression> ">" <integer>
+<statement> ::= <update_statement>
+<update_statement> ::=  "update" <string_literal> <assignment> ("high" | "normal") "load"
+<expression> ::= <identifier>
+<identifier> ::= <letter> (<letter> | <digit> | "_")*
+<letter> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
+<integer> ::= <digit>+
+<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<string_literal> ::= '"' (<character>)* '"'
+<character> ::= <letter> | <digit>
+<assignment> ::= "="
+<newline> ::= "\n"
+<indent> ::= "    "
+<dedent> ::= ""
 
