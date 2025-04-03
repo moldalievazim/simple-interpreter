@@ -3,22 +3,45 @@
     // 20.3 ->               5 ^ 3 + 6 * (45 - 3 ^ 2) - 4 / 2
     // 20.4 exponents ->     1.0e - 10,  -2.71828 - 2,  9.81e2
 
-    <expression> ::= <term> | <expression> "+" <term> | <expression> "-" <term>
-    <term>       ::= <factor> | <term> "*" <factor> | <term> "/" <factor>
-    <factor>     ::= <base> |<base> "^" <factor> | "(" <expression> ")" | <scientificNumber>
-    <base>       ::= <number>
-    <number>     ::= <integer> | <float>
-    <integer>    ::= <digit> | <integer> <digit>
-    <float>      ::= <integer> "." <integer>
-    <scientificNumber> ::= <number> "e" <signedInteger>
-    <signedInteger>    ::= <integer> | "+" <integer> | "-" <integer>
-    <digit>      ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+//    <expression> ::= <term> | <expression> "+" <term> | <expression> "-" <term>
+//    <term>       ::= <factor> | <term> "*" <factor> | <term> "/" <factor>
+//    <factor>     ::= <base> |<base> "^" <factor> | "(" <expression> ")" | <scientificNumber>
+//    <base>       ::= <number>
+//    <number>     ::= <integer> | <float>
+//    <integer>    ::= <digit> | <integer> <digit>
+//    <float>      ::= <integer> "." <integer>
+//    <scientificNumber> ::= <number> "e" <signedInteger>
+//    <signedInteger>    ::= <integer> | "+" <integer> | "-" <integer>
+//    <digit>      ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 
 
 //<program>   ::= <statement>
-//<statement> ::= <config> | <update> | <show>
+//<statement> ::= <config> | <update> | <compute> | <show>
 //<config>    ::= "config" <string> "=" <number>
 //<update>    ::= "update" <string> "=" <number>
-//<show>      ::= <string>
-//<string>    ::= ""
+//<compute>    ::= "compute" <string> "=" "%num_users" "*" "%request_rate"
+//<show>      ::= "show configs"
+
+// 10.2 Loop statement
+//for i in range(5):
+//    compute "iteration_result_%i" = %num_users * %i
+<program> ::= <for_loop>
+<for_loop> ::= "for" <identifier> "in" "range" "(" <integer> ")" ":" <newline> <indent> <statement>
+<statement> ::= <compute_statement>
+<compute_statement> ::= "compute" <string_literal> "+" <expression>
+<expression> ::= <term> (("*" | "/") <term>)*
+<term> ::= <factor> (("+" | "-") <factor>)*
+<factor> ::= <integer> | <identifier>
+<integer> ::= <digit>+
+<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<identifier> ::= <letter> (<letter> | <digit> | "_")*
+<letter> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
+<string_literal> ::= '"' (<character> | "%i")+ '"'
+<character> ::= <letter> | <digit>
+<newline> ::= "\n"
+<indent> ::= "    "
+
+// 10.3 Conditional statement
+//<program> ::= <if_statement>
+//<if_statement> ::=
 
