@@ -7,11 +7,13 @@ import java.util.regex.Pattern;
 
 public class Lexer {
     private String input;
-    private int currentPosition;
+    private int position;
+    private char currChar;
 
     public Lexer(String input) {
         this.input = input;
-        this.currentPosition = 0;
+        this.position = 0;
+        this.currChar = input == null || input.isEmpty() ? EOF_CHAR : input.charAt(position);
     }
 
     public List<Token> tokenize() {
