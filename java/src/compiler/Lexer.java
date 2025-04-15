@@ -1,11 +1,10 @@
-package compiler;
+package src.compiler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
 
 public class Lexer {
+    private static final char EOF_CHAR = '\0';
+    private static final Set<String> KEYWORDS = new HashSet<>(Arrays.asList("while", "if", "else", "print", "for", "do", "switch", "case"));
     private String input;
     private int position;
     private char currChar;
@@ -16,92 +15,136 @@ public class Lexer {
         this.currChar = input == null || input.isEmpty() ? EOF_CHAR : input.charAt(position);
     }
 
-    public List<Token> tokenize() {
-        List<Token> tokens = new ArrayList<>();
-
-        while (currentPosition < input.length()) {
-            char currentChar = input.charAt(currentPosition);
-
-            if (Character.isWhitespace(currentChar)) {
-                currentPosition++;
+    public Token nextToken() {
+        while (currChar != EOF_CHAR) {
+            if (Character.isWhitespace(currChar)) {
+                skipWhitespace();
                 continue;
             }
-
-            Token token = nextToken();
-            if (token != null) {
-                tokens.add(token);
-            } else {
-                throw new RuntimeException("Unknown character: " + currentChar);
+            if (Character.isDigit(currChar)) {
+                return readNumber();
             }
+            if (Character.isLetter(currChar)) {
+                return readIdentifier();
+            }
+            return switch (currChar) {
+                case '=' -> {
+                    advance();
+                    yield new Token(TokenType.ASSIGNMENT, "=");
+                }
+                case '+' -> {
+                    advance();
+                    yield new Token(TokenType.PLUS, "+");
+                }
+                case '-' -> {
+                    advance();
+                    yield new Token(TokenType.MINUS, "-");
+                }
+                case '/' -> {
+                    advance();
+                    yield new Token(TokenType.DIV, "/");
+                }
+                case '*' -> {
+                    advance();
+                    yield new Token(TokenType.MUL, "*");
+                }
+                case ';' -> {
+                    advance();
+                    yield new Token(TokenType.SEPARATOR, ";");
+                }
+                case '(' -> {
+                    advance();
+                    yield new Token(TokenType.LPAREN, "(");
+                }
+                case ')' -> {
+                    advance();
+                    yield new Token(TokenType.RPAREN, ")");
+                }
+                case '{' -> {
+                    advance();
+                    yield new Token(TokenType.LPAREN, "{");
+                }
+                case '}' -> {
+                    advance();
+                    yield new Token(TokenType.RPAREN, "}");
+                }
+                case '>' -> {
+                    advance();
+                    yield new Token(TokenType.GREATER, ">");
+                }
+                case '<' -> {
+                    advance();
+                    yield new Token(TokenType.LESS, "<");
+                }
+                default -> throw new LexerException("Unexpected character: " + currChar);
+            };
         }
 
-        return tokens;
+        return new Token(TokenType.EOF, "");
     }
 
-    private Token nextToken() {
-        if (currentPosition >= input.length()) return null;
-
-        String[] tokenPatterns = {
-                "config|compute|update|show",
-                "[a-zA-Z_][a-zA-Z0-9_]*",
-                "\\d+",
-                "[+-/*=<>!]",
-                "[.,;(){}]",
-        };
-
-        TokenType[] tokenTypes = {
-                TokenType.KEYWORD,
-                TokenType.IDENTIFIER,
-                TokenType.ASSIGNMENT,
-                TokenType.CONFIG,
-                TokenType.COMPUTE,
-                TokenType.UPDATE,
-                TokenType.STRING,
-                TokenType.NUMBER,
-                TokenType.OPERATOR,
-        };
-
-        for (int i = 0; i < tokenPatterns.length; i++) {
-            Pattern pattern = Pattern.compile("^" + tokenPatterns[i]);
-            Matcher matcher = pattern.matcher(input.substring(currentPosition));
-
-            if (matcher.find()) {
-                String value = matcher.group();
-                currentPosition += value.length();
-                return new Token(tokenTypes[i], value);
-            }
+    private Token readIdentifier() {
+        StringBuilder sb = new StringBuilder();
+        while (Character.isLetterOrDigit(currChar)) {
+            sb.append(currChar);
+            advance();
         }
+        String value = sb.toString();
 
-        return null;
-    };
+        return KEYWORDS.contains(value) ?
+                new Token(TokenType.KEYWORD, value) :
+                new Token(TokenType.IDENTIFIER, sb.toString());
+    }
 
-    public class Token{
-        final TokenType type;
-        final String value;
+    private Token readNumber() {
+        StringBuilder sb = new StringBuilder();
+        while (Character.isDigit(currChar)) {
+            sb.append(currChar);
+            advance();
+        }
+        return new Token(TokenType.NUMBER, sb.toString());
+    }
+
+    private void skipWhitespace() {
+        while (Character.isWhitespace(currChar)){
+            advance();
+        }
+    }
+
+    private void advance() {
+        position++;
+        currChar = position < input.length() ? input.charAt(position) : EOF_CHAR;
+    }
+
+    public static class Token{
+        public final TokenType tokenType;
+        public final String value;
 
         Token (TokenType type, String value) {
-            this.type = type;
+            this.tokenType = type;
             this.value = value;
         }
 
         @Override
         public String toString () {
             return "Token{" +
-                    "type=" + type +
+                    "type=" + tokenType +
                     ", value='" + value + '\'' +
                     '}';
         }
     }
 
     public enum TokenType {
-        KEYWORD,
-        IDENTIFIER,
-        OPERATOR,
-        CONFIG,
-        UPDATE,
-        COMPUTE,
         ASSIGNMENT,
-        STRING,
-        NUMBER,
+        COMPUTE,
+        CONFIG,
+        DIV,
+        EOF,
+        GREATER,
+        IDENTIFIER,
+        KEYWORD,
+        LESS,
+        LPAREN, MINUS, MUL, NUMBER, PLUS, RPAREN, SEPARATOR, UPDATE,
     }
 }
+
