@@ -9,6 +9,24 @@ public class Parser {
         this.currToken = lexer.nextToken();
     }
 
+    public static void printAST(ASTNode node, int indent) {
+        System.out.println("Abstract Syntax Tree");
+        String indentStr = "  ".repeat(indent);
+
+        if (node instanceof NumberNode) {
+            System.out.println(indentStr + "Number: " + ((NumberNode) node).value);
+        } else if (node instanceof IdentifierNode) {
+            System.out.println(indentStr + "Identifier: " + ((IdentifierNode) node).value);
+        } else if (node instanceof BinaryOpNode) {
+            BinaryOpNode binaryOpNode = (BinaryOpNode) node;
+            System.out.println(indentStr + "BinaryOp: " + binaryOpNode.op);
+            printAST(binaryOpNode.left, indent + 1);
+            printAST(binaryOpNode.right, indent + 1);
+        } else {
+            System.out.println(indentStr + "Unknown node");
+        }
+    }
+
     public ASTNode parse() {
         return parseExpression();
     }
