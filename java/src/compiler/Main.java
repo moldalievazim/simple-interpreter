@@ -2,9 +2,7 @@ package src.compiler;
 
 public class Main {
     public static void main(String[] args) {
-        String input = """
-                a + b
-                """;
+        String input = "a + 5 - 5";
 
         Lexer lexer = new Lexer(input);
         Lexer.Token token;
@@ -15,6 +13,6 @@ public class Main {
 
         Parser parser = new Parser(new Lexer(input));
         Parser.ASTNode tree = parser.parse();
-        parser.printAST(tree, 0);
+        Parser.printAST(tree, 0);
     }
 }

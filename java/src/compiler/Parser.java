@@ -10,15 +10,13 @@ public class Parser {
     }
 
     public static void printAST(ASTNode node, int indent) {
-        System.out.println("Abstract Syntax Tree");
         String indentStr = "  ".repeat(indent);
 
-        if (node instanceof NumberNode) {
-            System.out.println(indentStr + "Number: " + ((NumberNode) node).value);
-        } else if (node instanceof IdentifierNode) {
-            System.out.println(indentStr + "Identifier: " + ((IdentifierNode) node).value);
-        } else if (node instanceof BinaryOpNode) {
-            BinaryOpNode binaryOpNode = (BinaryOpNode) node;
+        if (node instanceof NumberNode numberNode) {
+            System.out.println(indentStr + "Number: " + numberNode.value);
+        } else if (node instanceof IdentifierNode identifierNode) {
+            System.out.println(indentStr + "Identifier: " + identifierNode.value);
+        } else if (node instanceof BinaryOpNode binaryOpNode) {
             System.out.println(indentStr + "BinaryOp: " + binaryOpNode.op);
             printAST(binaryOpNode.left, indent + 1);
             printAST(binaryOpNode.right, indent + 1);
